@@ -15,6 +15,8 @@ const LoginPage = () => {
     const [isError, setIsError] = useState(false);
 
     const login = () => {
+        console.log("aa");
+
         // post("/userInfo/login", {
         //     username,
         //     password
