@@ -15,19 +15,17 @@ const LoginPage = () => {
     const [isError, setIsError] = useState(false);
 
     const login = () => {
-        console.log("aa");
-
-        // post("/userInfo/login", {
-        //     username,
-        //     password
-        // }).then(result => {
-        //     if (result.data.status == "success") {
-        //         setStorage("user", result.data.data as object);
-        //         navigation.navigate("HomePage");
-        //     } else {
-        //         setIsError(true);
-        //     }
-        // });
+        post("/userInfo/login", {
+            username,
+            password
+        }).then(result => {
+            if (result.data.status == "success") {
+                setStorage("user", result.data.data as object);
+                navigation.navigate("HomePage");
+            } else {
+                setIsError(true);
+            }
+        });
     };
 
     return (
