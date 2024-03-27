@@ -4,6 +4,7 @@ import MusicItem from './MusicItem';
 import { MusicInfoItem } from '../types';
 
 const MusicList = ({ data }: { data: MusicInfoItem[]; }) => {
+
     return (
         <FlatList data={data} renderItem={(item) => {
             return <MusicItem data={item.item}></MusicItem>;

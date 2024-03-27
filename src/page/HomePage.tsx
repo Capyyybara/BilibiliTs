@@ -18,10 +18,11 @@ const HomePage = () => {
       container: {
         flex: 1,
         position: "relative",
+        paddingTop: "10%",
+        paddingBottom: "10%"
       },
       searchBox: {
         width: "80%",
-        marginTop: "10%"
       },
       messageBox: {
         position: "absolute",

@@ -11,24 +11,56 @@ export type RootStackParamList = {
     SearchPage: {
         searchQuery: string;
     };
+    AlbumPage: {
+        AlbumInfo: AlbumInfoItem;
+    };
 };
-export type MusicInfoItem = {
+export type AlbumInfoItem = {
     aid: number;
-    album: string;
-    artist: string;
+    album?: string;
+    artist?: string;
     artwork: string;
     bvid: string;
-    date: string;
-    description: string;
+    date?: string;
+    description?: string;
     duration: number;
     id: string;
-    tags: (null | string)[];
+    tags?: (null | string)[];
     title: string;
 };
 
-export type MusicInfoList = {
-    data: MusicInfoItem[];
+export type AlbumInfoList = {
+    data: AlbumInfoItem[];
     isEnd: boolean;
+};
+
+export type MusicInfoItem = {
+    aid: number;
+    bvid: string;
+    cid?: number;
+    duration: number;
+    id: number;
+    title: string;
+};
+
+export type IndividualMusicInfoItem = {
+    aid: number;
+    cid: number;
+    bvid: string;
+};
+
+export type Source = {
+    headers: {
+        accept: string;
+        'accept-encoding': string;
+        connection: string;
+        host: string;
+        referer: string;
+        'user-agent': string;
+    };
+    url: {
+        url: string;
+    };
 };
 
 import { StackNavigationProp } from "@react-navigation/stack";

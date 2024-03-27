@@ -1,17 +1,19 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { MusicInfoItem } from '../types';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackNavigation } from '../types';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { setMusicInfo } from '../store/slice/PlayBarSlice';
 
 const MusicItem = ({ data }: { data: MusicInfoItem; }) => {
+    const navigation = useNavigation<RootStackNavigation>();
+    const dispatch = useAppDispatch();
     return (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => {
+            dispatch(setMusicInfo(data));
+        }}>
             <View style={styles.container}>
-                <Image
-                    source={{
-                        uri: data.artwork,
-                    }}
-                    style={styles.image}
-                ></Image>
                 <View style={styles.box}>
                     <Text>{data.title}</Text>
                 </View>
@@ -26,8 +28,8 @@ const styles = StyleSheet.create({
     container: {
         height: 70,
         alignItems: "center",
-        paddingLeft: 10,
-        paddingRight: 10,
+        paddingLeft: 30,
+        paddingRight: 30,
         flexDirection: "row"
     },
     image: {

@@ -44,6 +44,8 @@ export default LoginPage;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingTop: "10%",
+        paddingBottom: "10%"
     },
     inputBox: {
         width: '70%',
