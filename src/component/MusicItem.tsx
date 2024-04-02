@@ -1,22 +1,32 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import React from 'react';
 import { MusicInfoItem } from '../types';
-import { useNavigation } from '@react-navigation/native';
-import { RootStackNavigation } from '../types';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { setMusicInfo } from '../store/slice/PlayBarSlice';
+import { setMusicInfo, setPlay } from '../store/slice/PlayBarSlice';
+import { Feather } from "@expo/vector-icons";
+
 
 const MusicItem = ({ data }: { data: MusicInfoItem; }) => {
-    const navigation = useNavigation<RootStackNavigation>();
+    const playBarSlice = useAppSelector(state => state.PlayBarSlice);
     const dispatch = useAppDispatch();
     return (
         <TouchableOpacity onPress={() => {
-            dispatch(setMusicInfo(data));
+            if (playBarSlice.musicInfo?.cid != data.cid) {
+                dispatch(setMusicInfo(data));
+                dispatch(setPlay(true));
+            }
         }}>
             <View style={styles.container}>
                 <View style={styles.box}>
                     <Text>{data.title}</Text>
                 </View>
+                <TouchableWithoutFeedback onPress={() => {
+                    console.log(data);
+                }}>
+                    <View style={styles.plus}>
+                        <Feather name="plus-square" size={22} color="black" />
+                    </View>
+                </TouchableWithoutFeedback>
             </View>
         </TouchableOpacity>
     );
@@ -44,5 +54,13 @@ const styles = StyleSheet.create({
         height: "100%",
         flexDirection: "row",
         alignItems: "center"
-    }
+    },
+    plus: {
+        right: 0,
+        top: -2,
+        justifyContent: "center",
+        height: "100%",
+        marginLeft: "5%",
+        marginRight: "5%"
+    },
 });

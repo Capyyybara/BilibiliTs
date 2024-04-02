@@ -1,10 +1,13 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import React from 'react';
-import { AlbumInfoItem } from '../types';
+import { AlbumInfoItem, UserInfo } from '../types';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackNavigation } from '../types';
 import { useAppDispatch } from '../store/hooks';
 import { setArtwork } from '../store/slice/PlayBarSlice';
+import { Feather } from "@expo/vector-icons";
+import { getStorage } from '../storage/storage';
+import post from '../request';
 
 const AlbumItem = ({ data }: { data: AlbumInfoItem; }) => {
     const navigation = useNavigation<RootStackNavigation>();
@@ -30,8 +33,22 @@ const AlbumItem = ({ data }: { data: AlbumInfoItem; }) => {
                         ></Image> : null}
 
                         <View style={styles.box}>
-                            <Text>{data.title}</Text>
+                            <Text numberOfLines={2}>{data.title}</Text>
                         </View>
+                        <TouchableWithoutFeedback onPress={async () => {
+                            console.log(data);
+                            let user = await getStorage("user") as UserInfo;
+                            console.log(user);
+                            post("/albumInfo/addAlbum", {
+                                albumName: data.title,
+                                userId: user.user_id,
+                                albumData: JSON.stringify(data)
+                            });
+                        }}>
+                            <View style={styles.plus}>
+                                <Feather name="plus-square" size={22} color="black" />
+                            </View>
+                        </TouchableWithoutFeedback>
                     </View>
                 </TouchableOpacity>
             );
@@ -47,7 +64,6 @@ const styles = StyleSheet.create({
         height: 70,
         alignItems: "center",
         paddingLeft: 10,
-        paddingRight: 10,
         flexDirection: "row"
     },
     image: {
@@ -58,9 +74,16 @@ const styles = StyleSheet.create({
     },
     box: {
         flex: 1,
-        // borderWidth: 1,
         height: "100%",
         flexDirection: "row",
         alignItems: "center"
-    }
+    },
+    plus: {
+        right: 0,
+        top: -2,
+        justifyContent: "center",
+        height: "100%",
+        marginLeft: "5%",
+        marginRight: "5%"
+    },
 });

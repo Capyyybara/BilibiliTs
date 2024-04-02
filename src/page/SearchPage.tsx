@@ -39,6 +39,8 @@ const SearchPage = () => {
         });
     };
 
+
+
     useEffect(() => {
         addHistory();
         getMusicInfo();
@@ -57,6 +59,8 @@ export default SearchPage;
 const styles = StyleSheet.create({
     container: {
         paddingTop: "10%",
-        paddingBottom: "10%"
+        // paddingBottom: "5%",
+        marginBottom: 75
+
     }
 });

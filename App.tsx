@@ -6,6 +6,7 @@ import { PaperProvider } from 'react-native-paper';
 import { Provider } from 'react-redux';
 import store from './src/store';
 import PlayBar from './src/component/PlayBar';
+import DrawItem from './src/component/DrawItem';
 
 import HomePage from './src/page/HomePage';
 import LoginPage from './src/page/LoginPage';
@@ -18,8 +19,8 @@ const Stack = createStackNavigator<RootStackParamList>();
 export default function App() {
   return (
     <PaperProvider>
-      <View style={styles.container}>
-        <Provider store={store}>
+      <Provider store={store}>
+        <View style={styles.container}>
           <PlayBar></PlayBar>
           <NavigationContainer>
             <StatusBar barStyle={'light-content'} ></StatusBar>
@@ -35,8 +36,9 @@ export default function App() {
               <Stack.Screen name='AlbumPage' component={AlbumPage}></Stack.Screen>
             </Stack.Navigator>
           </NavigationContainer>
-        </Provider>
-      </View>
+          <DrawItem></DrawItem>
+        </View>
+      </Provider>
     </PaperProvider>
   );
 }

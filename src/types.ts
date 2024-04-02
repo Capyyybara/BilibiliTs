@@ -58,9 +58,21 @@ export type Source = {
         referer: string;
         'user-agent': string;
     };
-    url: {
-        url: string;
-    };
+    url: string;
+};
+
+export type UserInfo = {
+    user_id: number;
+    username: string;
+    password: string;
+};
+
+export type AlbumInfo = {
+    album_id: number;
+    album_name: string;
+    user_id: number;
+    album_data: JSON;
+    album_bvid: string;
 };
 
 import { StackNavigationProp } from "@react-navigation/stack";
