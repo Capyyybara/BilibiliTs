@@ -12,6 +12,8 @@ import HomePage from './src/page/HomePage';
 import LoginPage from './src/page/LoginPage';
 import SearchPage from './src/page/SearchPage';
 import AlbumPage from './src/page/AlbumPage';
+import MyAlbumPage from './src/page/MyAlbumPage';
+import HistoryPage from './src/page/HistoryPage';
 
 import { RootStackParamList } from './src/types';
 const Stack = createStackNavigator<RootStackParamList>();
@@ -34,6 +36,8 @@ export default function App() {
               <Stack.Screen name='LoginPage' component={LoginPage}></Stack.Screen>
               <Stack.Screen name='SearchPage' component={SearchPage}></Stack.Screen>
               <Stack.Screen name='AlbumPage' component={AlbumPage}></Stack.Screen>
+              <Stack.Screen name='MyAlbumPage' component={MyAlbumPage}></Stack.Screen>
+              <Stack.Screen name='HistoryPage' component={HistoryPage}></Stack.Screen>
             </Stack.Navigator>
           </NavigationContainer>
           <DrawItem></DrawItem>

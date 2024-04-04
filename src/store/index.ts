@@ -3,13 +3,15 @@ import SnackbarSlice from "./slice/SnackbarSlice";
 import PlayBarSlice from "./slice/PlayBarSlice";
 import UserInfoSlice from "./slice/UserInfoSlice";
 import AlbumSlice from "./slice/AlbumSlice";
+import MusicInfoSlice from "./slice/MusicInfoSlice";
 
 const store = configureStore({
     reducer: {
         SnackbarSlice,
         PlayBarSlice,
         UserInfoSlice,
-        AlbumSlice
+        AlbumSlice,
+        MusicInfoSlice,
     }
 });
 

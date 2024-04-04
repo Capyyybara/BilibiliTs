@@ -4,10 +4,12 @@ import { MusicInfoItem } from '../types';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setMusicInfo, setPlay } from '../store/slice/PlayBarSlice';
 import { Feather } from "@expo/vector-icons";
-
+import { setOpen } from '../store/slice/AlbumSlice';
+import { setAlbumId, setArtwork, setMusicInfo as setAlbumMusicInfo } from '../store/slice/MusicInfoSlice';
 
 const MusicItem = ({ data }: { data: MusicInfoItem; }) => {
     const playBarSlice = useAppSelector(state => state.PlayBarSlice);
+
     const dispatch = useAppDispatch();
     return (
         <TouchableOpacity onPress={() => {
@@ -21,7 +23,9 @@ const MusicItem = ({ data }: { data: MusicInfoItem; }) => {
                     <Text>{data.title}</Text>
                 </View>
                 <TouchableWithoutFeedback onPress={() => {
-                    console.log(data);
+                    dispatch(setAlbumMusicInfo(data));
+                    // dispatch(setArtwork(playBarSlice.artwork));
+                    dispatch(setOpen());
                 }}>
                     <View style={styles.plus}>
                         <Feather name="plus-square" size={22} color="black" />

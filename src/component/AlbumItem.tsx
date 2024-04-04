@@ -19,6 +19,8 @@ const AlbumItem = ({ data }: { data: AlbumInfoItem; }) => {
         } else {
             return (
                 <TouchableOpacity onPress={() => {
+                    console.log(data.artwork);
+
                     dispatch(setArtwork(data.artwork));
                     navigation.navigate("AlbumPage", {
                         AlbumInfo: data
@@ -36,9 +38,7 @@ const AlbumItem = ({ data }: { data: AlbumInfoItem; }) => {
                             <Text numberOfLines={2}>{data.title}</Text>
                         </View>
                         <TouchableWithoutFeedback onPress={async () => {
-                            console.log(data);
                             let user = await getStorage("user") as UserInfo;
-                            console.log(user);
                             post("/albumInfo/addAlbum", {
                                 albumName: data.title,
                                 userId: user.user_id,

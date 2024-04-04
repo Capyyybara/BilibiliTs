@@ -4,10 +4,11 @@ import { Image, StyleSheet, Text, View, Modal } from 'react-native';
 import { useAppSelector, useAppDispatch } from "../store/hooks";
 import bilibili from "../api/bilibili";
 import post from "../request";
-import { Source } from "../types";
+import { Source, UserInfo } from "../types";
 import { Feather } from "@expo/vector-icons";
-import { setPlay } from "../store/slice/PlayBarSlice";
+import { setPlay, setMusicInfo, setArtwork } from "../store/slice/PlayBarSlice";
 import { TouchableRipple } from "react-native-paper";
+import { getStorage } from "../storage/storage";
 
 const PlayBar = () => {
     const dispatch = useAppDispatch();
@@ -15,6 +16,8 @@ const PlayBar = () => {
     const [status, setStatus] = useState(0);
     const [visible, setVisible] = useState(false);
     const getSource = async () => {
+        console.log(playBarSlice.musicInfo?.cid);
+
         const source = await bilibili.getMediaSource({
             aid: playBarSlice.musicInfo?.aid,
             bvid: playBarSlice.musicInfo?.bvid,
@@ -27,22 +30,35 @@ const PlayBar = () => {
 
     const soundRef = useRef<Audio.Sound | null>(null);
 
-    const playSound = async () => {
+    const playSound = () => {
         console.log(playBarSlice.musicInfo?.title);
-        await soundRef.current?.playAsync();
         dispatch(setPlay(true));
+        soundRef.current?.playAsync();
         console.log("开始播放");
     };
 
-    const pauseSound = async () => {
-        await soundRef.current?.pauseAsync();
+    const pauseSound = () => {
         dispatch(setPlay(false));
+        soundRef.current?.pauseAsync();
         console.log("暂停播放");
+    };
+
+    const unloadSound = async () => {
+        try {
+            await soundRef.current?.unloadAsync();
+            console.log("音乐卸载完成");
+            setPlay(false);
+        } catch (error) {
+            console.log("Error unloading sound:", error);
+            console.log("音乐卸载失败");
+        }
     };
 
     const createSound = async () => {
         const musicInfo = await getSource();
-        await Audio.setAudioModeAsync({ staysActiveInBackground: true });
+        console.log("创建音乐");
+
+        Audio.setAudioModeAsync({ staysActiveInBackground: true });
 
         const { sound } = await Audio.Sound.createAsync({
             headers: musicInfo.headers,
@@ -56,6 +72,7 @@ const PlayBar = () => {
                 dispatch(setPlay(false));
             }
         });
+
         soundRef.current = sound;
 
         if (playBarSlice.play) {
@@ -63,18 +80,36 @@ const PlayBar = () => {
         }
     };
 
-    useEffect(() => {
+    const getLastMusicHistory = async () => {
+        let userInfo = await getStorage("user") as null | UserInfo;
+        let result = await post("/musicHistoryInfo/getLastMusicHistory", {
+            userId: userInfo?.user_id
+        });
+        dispatch(setMusicInfo(result.data.data[0]));
+        dispatch(setArtwork(result.data.data[0].artwork));
+    };
+
+    const addMusicHistory = async () => {
+
         if (playBarSlice.play) {
+            let user = await getStorage("user");
+            post("musicHistoryInfo/addMusicHistory", { ...playBarSlice.musicInfo, artwork: playBarSlice.artwork, userId: user.user_id });
+        }
+    };
+
+    useEffect(() => {
+        if (playBarSlice.musicInfo?.cid != null) {
             createSound();
         }
-
-        post("musicHistoryInfo/addMusicHistory", { ...playBarSlice.musicInfo, artwork: playBarSlice.artwork });
-
+        addMusicHistory();
         return () => {
-            soundRef.current?.unloadAsync();
-            dispatch(setPlay(false));
+            unloadSound();
         };
     }, [playBarSlice.musicInfo]);
+
+    useEffect(() => {
+        getLastMusicHistory();
+    }, []);
 
     const [width, setWidth] = useState<number>();
     const [size, setSize] = useState<number>();

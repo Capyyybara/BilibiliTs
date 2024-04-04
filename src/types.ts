@@ -14,6 +14,10 @@ export type RootStackParamList = {
     AlbumPage: {
         AlbumInfo: AlbumInfoItem;
     };
+    MyAlbumPage: {
+        albumInfo: AlbumInfo;
+    };
+    HistoryPage: undefined;
 };
 export type AlbumInfoItem = {
     aid: number;
@@ -33,7 +37,6 @@ export type AlbumInfoList = {
     data: AlbumInfoItem[];
     isEnd: boolean;
 };
-
 export type MusicInfoItem = {
     aid: number;
     bvid: string;
@@ -71,8 +74,32 @@ export type AlbumInfo = {
     album_id: number;
     album_name: string;
     user_id: number;
-    album_data: JSON;
+    album_data: string;
     album_bvid: string;
+};
+
+export type MyAlbumMusicInfo = {
+    aid: number;
+    album_id: number;
+    artwork: string;
+    bvid: string;
+    cid: number;
+    duration: number;
+    id: number;
+    music_id: number;
+    title: string;
+};
+
+export type MusicHistory = {
+    aid: number;
+    artwork: string;
+    bvid: string;
+    cid: number;
+    duration: number;
+    id: number;
+    music_history_id: number;
+    title: string;
+    user_id: number;
 };
 
 import { StackNavigationProp } from "@react-navigation/stack";

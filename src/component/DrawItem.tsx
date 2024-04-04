@@ -9,6 +9,7 @@ export default function DrawerExample() {
     const dispatch = useAppDispatch();
     const albumSlice = useAppSelector(state => state.AlbumSlice);
     const playBarSlice = useAppSelector(state => state.PlayBarSlice);
+    const musicInfoSlice = useAppSelector(state => state.MusicInfoSlice);
 
     const getArtificailAlbum = (item: AlbumInfo, index: number) => {
         if (item.album_data == null) {
@@ -16,7 +17,7 @@ export default function DrawerExample() {
                 <TouchableOpacity key={index} onPress={() => {
                     dispatch(setOpen());
                     post("/musicInfo/addMusic", {
-                        ...playBarSlice.musicInfo,
+                        ...musicInfoSlice.musicInfo,
                         artwork: playBarSlice.artwork,
                         albumId: item.album_id
                     });

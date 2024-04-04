@@ -3,7 +3,7 @@ import { Dialog, Portal } from 'react-native-paper';
 import { getStorage, removeStorage } from '../storage/storage';
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { RootStackNavigation, UserInfo, AlbumInfo } from '../types';
+import { RootStackNavigation, UserInfo, AlbumInfo, AlbumInfoItem } from '../types';
 import { Button, Searchbar } from 'react-native-paper';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { setShow } from '../store/slice/SnackbarSlice';
@@ -14,6 +14,7 @@ import { Feather } from "@expo/vector-icons";
 import post from '../request';
 import { setUserInfo } from '../store/slice/UserInfoSlice';
 import { setAlbumInfo } from '../store/slice/AlbumSlice';
+import { setMusicInfo, setPlay, setArtwork } from '../store/slice/PlayBarSlice';
 
 const HomePage = () => {
   const snackbarSlice = useAppSelector(state => state.SnackbarSlice);
@@ -161,8 +162,11 @@ const HomePage = () => {
     }
   };
 
+
+
   useFocusEffect(useCallback(() => {
     getUserInfo();
+
   }, []));
 
   useEffect(() => {
@@ -182,7 +186,7 @@ const HomePage = () => {
         ></Searchbar>
       </View>
       <View style={styles.btnBox}>
-        <TouchableWithoutFeedback onPress={async () => {
+        {/* <TouchableWithoutFeedback onPress={async () => {
 
 
         }} >
@@ -190,9 +194,9 @@ const HomePage = () => {
             <AntDesign name="heart" size={24} color="#ff6666" />
             <Text>喜欢</Text>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback> */}
         <TouchableWithoutFeedback onPress={() => {
-
+          navigation.push("HistoryPage");
         }}>
           <View style={styles.btn}>
             <AntDesign
@@ -217,7 +221,15 @@ const HomePage = () => {
       <View style={styles.albumBox}>
         {albumSlice.albumInfo ? <FlatList data={albumSlice.albumInfo} style={styles.albumContent} renderItem={(item) => {
           return (
-            <TouchableOpacity onPress={() => { }}>
+            <TouchableOpacity onPress={() => {
+              if (item.item.album_data) {
+                let data = JSON.parse(item.item.album_data) as AlbumInfoItem;
+                dispatch(setArtwork(data.artwork));
+              }
+              navigation.push("MyAlbumPage", {
+                albumInfo: item.item
+              });
+            }}>
               <View style={styles.albumItem}>
                 <Text numberOfLines={1} style={styles.text}>{item.item.album_name}</Text>
                 <TouchableWithoutFeedback

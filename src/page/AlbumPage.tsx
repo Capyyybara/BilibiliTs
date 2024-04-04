@@ -29,9 +29,6 @@ const AlbumPage = () => {
             console.log("歌单请求出错");
         });
     }, []);
-
-
-
     return (
         <View style={styles.container}>
             {musicList ? <MusicList data={musicList}></MusicList> : null}
