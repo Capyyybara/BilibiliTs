@@ -4,6 +4,7 @@ import PlayBarSlice from "./slice/PlayBarSlice";
 import UserInfoSlice from "./slice/UserInfoSlice";
 import AlbumSlice from "./slice/AlbumSlice";
 import MusicInfoSlice from "./slice/MusicInfoSlice";
+import AlbumListSlice from "./slice/AlbumListSlice";
 
 const store = configureStore({
     reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
         UserInfoSlice,
         AlbumSlice,
         MusicInfoSlice,
+        AlbumListSlice
     }
 });
 

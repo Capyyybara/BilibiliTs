@@ -41,6 +41,7 @@ export default function DrawerExample() {
         >
             <View style={styles.container}>
                 <ScrollView style={styles.modal}>
+
                     {albumSlice.albumInfo ? albumSlice.albumInfo.map((item, index) => {
                         return getArtificailAlbum(item, index);
                     }) : null}

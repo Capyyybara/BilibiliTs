@@ -4,10 +4,13 @@ import { AlbumInfoItem, MusicInfoItem, RootStackParamList } from '../types';
 import bili from '../api/bilibili';
 import MusicList from '../component/MusicList';
 import { useEffect, useState } from 'react';
+import { setAlbumListInfo } from '../store/slice/AlbumListSlice';
+import { useAppDispatch } from '../store/hooks';
 
 const AlbumPage = () => {
     const route = useRoute<RouteProp<RootStackParamList, "AlbumPage">>();
     const [musicList, setMusicList] = useState<Array<MusicInfoItem>>();
+    const dispatch = useAppDispatch();
     useEffect(() => {
         bili.getAlbumInfo({
             bvid: route.params.AlbumInfo.bvid,
@@ -16,6 +19,9 @@ const AlbumPage = () => {
             let musicList = result.musicList as Array<MusicInfoItem>;
             if (result.musicList.length > 1) {
                 setMusicList(musicList);
+                // dispatch(setAlbumListInfo(musicList));
+                // console.log(musicList);
+
             } else {
                 setMusicList([{
                     aid: route.params.AlbumInfo.aid,
@@ -24,6 +30,13 @@ const AlbumPage = () => {
                     id: parseInt(route.params.AlbumInfo.id),
                     title: route.params.AlbumInfo.title,
                 }]);
+                // dispatch(setAlbumListInfo([{
+                //     aid: route.params.AlbumInfo.aid,
+                //     bvid: route.params.AlbumInfo.bvid,
+                //     duration: route.params.AlbumInfo.duration,
+                //     id: parseInt(route.params.AlbumInfo.id),
+                //     title: route.params.AlbumInfo.title,
+                // }]));
             }
         }).catch(() => {
             console.log("歌单请求出错");

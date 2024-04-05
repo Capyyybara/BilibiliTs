@@ -4,20 +4,23 @@ import { Image, StyleSheet, Text, View, Modal } from 'react-native';
 import { useAppSelector, useAppDispatch } from "../store/hooks";
 import bilibili from "../api/bilibili";
 import post from "../request";
-import { Source, UserInfo } from "../types";
+import { Source, UserInfo, MusicInfoItem, AlbumInfo } from "../types";
 import { Feather } from "@expo/vector-icons";
 import { setPlay, setMusicInfo, setArtwork } from "../store/slice/PlayBarSlice";
 import { TouchableRipple } from "react-native-paper";
 import { getStorage } from "../storage/storage";
+import MusicInfoSlice from "../store/slice/MusicInfoSlice";
+import { ProgressBar, MD3Colors } from 'react-native-paper';
 
 const PlayBar = () => {
     const dispatch = useAppDispatch();
     const playBarSlice = useAppSelector(state => state.PlayBarSlice);
+    const albumListSlice = useAppSelector(state => state.AlbumListSlice);
     const [status, setStatus] = useState(0);
+    const [duration, setDuration] = useState(0);
     const [visible, setVisible] = useState(false);
-    const getSource = async () => {
-        console.log(playBarSlice.musicInfo?.cid);
 
+    const getSource = async () => {
         const source = await bilibili.getMediaSource({
             aid: playBarSlice.musicInfo?.aid,
             bvid: playBarSlice.musicInfo?.bvid,
@@ -54,6 +57,14 @@ const PlayBar = () => {
         }
     };
 
+    const progress = (a: number, b: number) => {
+        if (isNaN(parseFloat((a / b).toFixed(2)))) {
+            return 0;
+        } else {
+            return parseFloat((a / b).toFixed(2));
+        }
+    };
+
     const createSound = async () => {
         const musicInfo = await getSource();
         console.log("创建音乐");
@@ -64,9 +75,9 @@ const PlayBar = () => {
             headers: musicInfo.headers,
             uri: musicInfo.url,
         });
-
         sound.setOnPlaybackStatusUpdate((status: any) => {
             setStatus(status.positionMillis);
+            setDuration(status.durationMillis);
             if (status.isLoaded && status.didJustFinish) {
                 console.log('音频已经播放完毕');
                 dispatch(setPlay(false));
@@ -82,18 +93,50 @@ const PlayBar = () => {
 
     const getLastMusicHistory = async () => {
         let userInfo = await getStorage("user") as null | UserInfo;
-        let result = await post("/musicHistoryInfo/getLastMusicHistory", {
-            userId: userInfo?.user_id
-        });
-        dispatch(setMusicInfo(result.data.data[0]));
-        dispatch(setArtwork(result.data.data[0].artwork));
+        if (userInfo != null) {
+            let result = await post("/musicHistoryInfo/getLastMusicHistory", {
+                userId: userInfo?.user_id
+            });
+            dispatch(setMusicInfo(result.data.data[0]));
+            dispatch(setArtwork(result.data.data[0].artwork));
+        }
     };
 
     const addMusicHistory = async () => {
-
         if (playBarSlice.play) {
             let user = await getStorage("user");
             post("musicHistoryInfo/addMusicHistory", { ...playBarSlice.musicInfo, artwork: playBarSlice.artwork, userId: user.user_id });
+        }
+    };
+
+    const getIndex = () => {
+        for (let i = 0; i < albumListSlice.albumListInfo.length; i++) {
+            if (albumListSlice.albumListInfo[i].cid == playBarSlice.musicInfo?.cid) {
+                return i;
+            }
+        }
+        return null;
+    };
+
+    const nextSong = () => {
+        let i = getIndex();
+        if (i == albumListSlice.albumListInfo.length - 1 || i == null) {
+            return;
+        }
+        else {
+            dispatch(setMusicInfo(albumListSlice.albumListInfo[i! + 1]));
+            dispatch(setPlay(true));
+        }
+    };
+
+    const previousSong = () => {
+        let i = getIndex();
+        if (i == 0 || i == null) {
+            return;
+        }
+        else {
+            dispatch(setMusicInfo(albumListSlice.albumListInfo[i! - 1]));
+            dispatch(setPlay(true));
         }
     };
 
@@ -111,29 +154,35 @@ const PlayBar = () => {
         getLastMusicHistory();
     }, []);
 
-    const [width, setWidth] = useState<number>();
     const [size, setSize] = useState<number>();
     const [modalImage, setModalImage] = useState<number>();
 
     const styles = StyleSheet.create({
         playBar: {
             position: "absolute",
-            bottom: 0,
+            bottom: 1,
             width: "100%",
             height: 75,
-            borderTopWidth: 1,
+            // borderTopWidth: 1,
             borderColor: "#f5f5f5",
             zIndex: 100,
             backgroundColor: "white",
             justifyContent: "center",
-            flexDirection: "row"
+            flexDirection: "row",
+            borderWidth: 1,
+            paddingBottom: size,
+            paddingTop: size,
+            display: playBarSlice.show ? "flex" : "none"
+        },
+        imageBox: {
+            justifyContent: "center",
+            // borderWidth: 1,
         },
         image: {
-            height: '80%',
-            width,
+            height: 58,
+            width: 58,
             marginLeft: size,
             marginRight: size,
-            marginTop: size,
             borderRadius: 5
         },
         box: {
@@ -141,8 +190,6 @@ const PlayBar = () => {
             height: "100%",
             width: "auto",
             marginRight: size,
-            marginTop: size,
-            marginBottom: size,
             flexDirection: "row"
         },
         btnBox: {
@@ -152,7 +199,9 @@ const PlayBar = () => {
         },
         contentBox: {
             flex: 1,
-            borderWidth: 1,
+            // borderWidth: 1,
+            marginRight: size,
+            justifyContent: "space-around"
         },
         modal: {
             height: "100%",
@@ -185,6 +234,7 @@ const PlayBar = () => {
             }}>
             <TouchableRipple
                 rippleColor="rgba(0, 0, 0, .32)"
+                style={styles.imageBox}
                 onPress={() => {
                     setVisible(true);
                 }}
@@ -195,16 +245,25 @@ const PlayBar = () => {
                             uri: playBarSlice.artwork,
                         }}
                         style={styles.image}
-                        onLayout={(e) => {
-                            setWidth(e.nativeEvent.layout.height);
-                        }}
                     />
                 ) : <View />}
             </TouchableRipple>
             <View style={styles.box}>
-                <View style={styles.contentBox}><Text>{status}</Text></View>
+                <View style={styles.contentBox}>
+                    <Text>{playBarSlice.musicInfo?.title}</Text>
+                    {/* <Text>{playBarSlice.musicInfo?.duration}</Text> */}
+                    <ProgressBar progress={progress(status, duration)} color={MD3Colors.primary50} />
+                    {/* <ProgressBar progress={0} color={MD3Colors.primary50} /> */}
+                </View>
                 <View style={styles.btnBox}>
-                    <Feather name="skip-back" size={30} color="black" />
+                    <Feather
+                        name="skip-back"
+                        size={30}
+                        color="black"
+                        onPress={() => {
+                            previousSong();
+                        }}
+                    />
                     {playBarSlice.play ? (
                         <Feather
                             name="pause-circle"
@@ -221,14 +280,7 @@ const PlayBar = () => {
                         />
                     )}
                     <Feather name="skip-forward" size={30} color="black"
-                        onPress={() => {
-                            soundRef.current?.getStatusAsync().then(status => {
-                                if (status.isLoaded) {
-                                    const newPosition = status.positionMillis + 5000;
-                                    soundRef.current?.setPositionAsync(newPosition);
-                                }
-                            });
-                        }}
+                        onPress={() => nextSong()}
                     />
                 </View>
             </View>

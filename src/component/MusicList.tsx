@@ -5,7 +5,7 @@ import { MusicInfoItem } from '../types';
 const MusicList = ({ data }: { data: MusicInfoItem[]; }) => {
     return (
         <FlatList data={data} renderItem={(item) => {
-            return <MusicItem data={item.item} key={item.index}></MusicItem>;
+            return <MusicItem data={item.item} albumInfo={data} key={item.index}></MusicItem>;
         }}></FlatList>
     );
 };

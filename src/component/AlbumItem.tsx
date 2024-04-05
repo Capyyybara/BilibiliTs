@@ -8,6 +8,7 @@ import { setArtwork } from '../store/slice/PlayBarSlice';
 import { Feather } from "@expo/vector-icons";
 import { getStorage } from '../storage/storage';
 import post from '../request';
+import { setAlbumInfo } from '../store/slice/AlbumSlice';
 
 const AlbumItem = ({ data }: { data: AlbumInfoItem; }) => {
     const navigation = useNavigation<RootStackNavigation>();
@@ -19,8 +20,6 @@ const AlbumItem = ({ data }: { data: AlbumInfoItem; }) => {
         } else {
             return (
                 <TouchableOpacity onPress={() => {
-                    console.log(data.artwork);
-
                     dispatch(setArtwork(data.artwork));
                     navigation.navigate("AlbumPage", {
                         AlbumInfo: data

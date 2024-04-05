@@ -18,6 +18,7 @@ export type RootStackParamList = {
         albumInfo: AlbumInfo;
     };
     HistoryPage: undefined;
+    SignUpPage: undefined;
 };
 export type AlbumInfoItem = {
     aid: number;

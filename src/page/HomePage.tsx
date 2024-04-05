@@ -6,7 +6,6 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { RootStackNavigation, UserInfo, AlbumInfo, AlbumInfoItem } from '../types';
 import { Button, Searchbar } from 'react-native-paper';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
-import { setShow } from '../store/slice/SnackbarSlice';
 import { useTheme } from 'react-native-paper';
 import Message from '../component/Message';
 import { AntDesign } from "@expo/vector-icons";
@@ -14,7 +13,7 @@ import { Feather } from "@expo/vector-icons";
 import post from '../request';
 import { setUserInfo } from '../store/slice/UserInfoSlice';
 import { setAlbumInfo } from '../store/slice/AlbumSlice';
-import { setMusicInfo, setPlay, setArtwork } from '../store/slice/PlayBarSlice';
+import { setMusicInfo, setPlay, setArtwork, setShow } from '../store/slice/PlayBarSlice';
 
 const HomePage = () => {
   const snackbarSlice = useAppSelector(state => state.SnackbarSlice);
@@ -170,7 +169,8 @@ const HomePage = () => {
   }, []));
 
   useEffect(() => {
-    getUserInfo();
+    // getUserInfo();
+    dispatch(setShow(true));
   }, []);
 
 
@@ -222,6 +222,7 @@ const HomePage = () => {
         {albumSlice.albumInfo ? <FlatList data={albumSlice.albumInfo} style={styles.albumContent} renderItem={(item) => {
           return (
             <TouchableOpacity onPress={() => {
+
               if (item.item.album_data) {
                 let data = JSON.parse(item.item.album_data) as AlbumInfoItem;
                 dispatch(setArtwork(data.artwork));

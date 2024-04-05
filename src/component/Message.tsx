@@ -45,7 +45,7 @@ const Message = () => {
 
     return (
         <View style={[styles.messageBox, { display: snackbarSlice.show ? 'flex' : 'none' }]}>
-            <View style={styles.message}><Text style={{ fontSize: 16 }}>{snackbarSlice.message}</Text></View>
+            <View style={styles.message}><Text style={{ fontSize: 16, color: "white" }}>{snackbarSlice.message}</Text></View>
         </View>
     );
 };

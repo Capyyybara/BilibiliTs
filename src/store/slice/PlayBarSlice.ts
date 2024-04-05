@@ -8,7 +8,8 @@ const PlayBarSlice = createSlice({
         musicInfo: null,
         artwork: "",
         play: false,
-    } as { musicInfo: MusicInfoItem | null; artwork: string; play: boolean; },
+        show: true,
+    } as { musicInfo: MusicInfoItem | null; artwork: string; play: boolean; show: boolean; },
     reducers: {
         setMusicInfo(state, action: PayloadAction<MusicInfoItem>) {
             state.musicInfo = { ...action.payload };
@@ -18,8 +19,11 @@ const PlayBarSlice = createSlice({
         },
         setPlay(state, action: PayloadAction<boolean>) {
             state.play = action.payload;
+        },
+        setShow(state, action) {
+            state.show = action.payload;
         }
     }
 });
 export default PlayBarSlice.reducer;
-export const { setMusicInfo, setArtwork, setPlay } = PlayBarSlice.actions;
+export const { setMusicInfo, setArtwork, setPlay, setShow } = PlayBarSlice.actions;

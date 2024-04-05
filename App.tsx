@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import { StyleSheet, View, StatusBar, Dimensions, SafeAreaView } from 'react-native';
+import { StyleSheet, View, StatusBar, Dimensions, SafeAreaView, ErrorHandlerCallback } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { PaperProvider } from 'react-native-paper';
@@ -14,11 +14,16 @@ import SearchPage from './src/page/SearchPage';
 import AlbumPage from './src/page/AlbumPage';
 import MyAlbumPage from './src/page/MyAlbumPage';
 import HistoryPage from './src/page/HistoryPage';
+import SignUpPage from './src/page/SignUpPage';
 
 import { RootStackParamList } from './src/types';
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
+  // if (__DEV__) {
+  //   console.log("aa");
+
+  // }
   return (
     <PaperProvider>
       <Provider store={store}>
@@ -38,6 +43,7 @@ export default function App() {
               <Stack.Screen name='AlbumPage' component={AlbumPage}></Stack.Screen>
               <Stack.Screen name='MyAlbumPage' component={MyAlbumPage}></Stack.Screen>
               <Stack.Screen name='HistoryPage' component={HistoryPage}></Stack.Screen>
+              <Stack.Screen name='SignUpPage' component={SignUpPage}></Stack.Screen>
             </Stack.Navigator>
           </NavigationContainer>
           <DrawItem></DrawItem>

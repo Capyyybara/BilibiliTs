@@ -4,15 +4,21 @@ import { useEffect, useState } from 'react';
 import { MusicHistory } from '../types';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setMusicInfo, setPlay, setArtwork } from '../store/slice/PlayBarSlice';
+import { getStorage } from '../storage/storage';
 
 const HistoryPage = () => {
     const [history, setHistory] = useState<MusicHistory[]>();
-    useEffect(() => {
+
+    const getHistory = async () => {
+        let user = await getStorage("user");
         post("/musicHistoryInfo/getAllHisotry", {
-            userId: 1
+            userId: user.user_id
         }).then((result: any) => {
             setHistory(result.data.data);
         });
+    };
+    useEffect(() => {
+        getHistory();
     }, []);
     const playBarSlice = useAppSelector(state => state.PlayBarSlice);
 

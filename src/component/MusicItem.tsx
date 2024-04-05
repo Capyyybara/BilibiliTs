@@ -6,16 +6,20 @@ import { setMusicInfo, setPlay } from '../store/slice/PlayBarSlice';
 import { Feather } from "@expo/vector-icons";
 import { setOpen } from '../store/slice/AlbumSlice';
 import { setAlbumId, setArtwork, setMusicInfo as setAlbumMusicInfo } from '../store/slice/MusicInfoSlice';
+import { setAlbumListInfo } from '../store/slice/AlbumListSlice';
 
-const MusicItem = ({ data }: { data: MusicInfoItem; }) => {
+
+const MusicItem = ({ data, albumInfo }: { data: MusicInfoItem; albumInfo: MusicInfoItem[]; }) => {
     const playBarSlice = useAppSelector(state => state.PlayBarSlice);
-
     const dispatch = useAppDispatch();
     return (
         <TouchableOpacity onPress={() => {
             if (playBarSlice.musicInfo?.cid != data.cid) {
                 dispatch(setMusicInfo(data));
                 dispatch(setPlay(true));
+                console.log(albumInfo);
+
+                dispatch(setAlbumListInfo(albumInfo));
             }
         }}>
             <View style={styles.container}>
